@@ -1,0 +1,30 @@
+{
+  "doi": null,
+  "coreId": null,
+  "oai": null,
+ "identifiers": [],
+  "title": null,
+  "authors": [],
+  "enrichments": {
+    "references": [],
+    "documentType": {
+       "type": null,
+       "confidence": null
+    }
+  },
+  "contributors": [],
+  "datePublished": null,
+  "abstract": null,
+  "downloadUrl": null,
+  "fullTextIdentifier": null,
+  "pdfHashValue": null,
+  "publisher": null,
+  "rawRecordXml": null,
+  "journals":[],
+  "language": null,
+  "relations": [],
+  "year": null,
+  "topics": [],
+  "subjects": [],
+  "fullText": null
+}
