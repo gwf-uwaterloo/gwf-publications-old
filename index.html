@@ -51,8 +51,8 @@
 <script src="gwf_co_author_graph/plugins/sigma.parsers.gexf/gexf-parser.js"></script>
 <script src="gwf_co_author_graph/plugins/sigma.parsers.gexf/sigma.parsers.gexf.js"></script>
 <nav class="navbar navbar-dark bg-primary">
-  <a class="navbar-brand" href="#">
-    GWF CO-Authorship Network
+  <a class="navbar-brand" href="index.html">
+    Global Water Futures Co-Author Graph
   </a>
   <div class="node-controls">
     <div class="search-container">
@@ -61,14 +61,22 @@
     <datalist id="nodes-datalist"></datalist>
   </div>
 </nav>
+<div class="container p-3 my-3 border rounded" style="float: left; width: 250px; height: 100%;">
+  <h2 class="centre">Global Water Futures Co-Author Graph</h2>
+  <p>
+    This co-author graph shows a visualization of common author collaborations in the GWF community.
+    It is an undirected graph with <b>nodes</b> representing authors and <b>edges</b> showing co-authorship. The nodes
+    are scaled with the number of gwf publications.
+  </p>
+</div>
 <span id="selected-nodes" class="btn btn-dark"
-  style="margin-top: 5px; margin-right: 13px; z-index: 9; float: right;"></span>
+  style="margin-top: 5px; margin-right: 12px; z-index: 9; float: right;"></span>
 <div id="container">
   <style>
     #sigma-container {
       top: 55px;
       bottom: 0;
-      left: 0;
+      left: 250px;
       right: 0;
       position: absolute;
       z-index: 1;
