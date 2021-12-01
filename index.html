@@ -54,7 +54,15 @@
   <a class="navbar-brand" href="#">
     GWF CO-Authorship Network
   </a>
+  <div class="node-controls">
+    <div class="search-container">
+      <input id="search-input" list="nodes-datalist" placeholder="Search for a node">
+    </div>
+    <datalist id="nodes-datalist"></datalist>
+  </div>
 </nav>
+<span id="selected-nodes" class="btn btn-dark"
+  style="margin-top: 5px; margin-right: 10px; z-index: 9; float: right;"></span>
 <div id="container">
   <style>
     #sigma-container {
@@ -63,6 +71,7 @@
       left: 0;
       right: 0;
       position: absolute;
+      z-index: 1;
     }
   </style>
   <div id="sigma-container"></div>
@@ -79,6 +88,9 @@
    * configuration object. The plugin will just add the "graph" key to it
    * before the instanciation.
    */
+
+  var selected = [];
+
   sigma.classes.graph.addMethod('neighbors', function (nodeId) {
     var k,
       neighbors = {},
@@ -90,20 +102,28 @@
     return neighbors;
   });
 
-  sigma.parsers.gexf('gwf_co_author_graph/file/data/graph2.gexf',
-    {
-      container: 'sigma-container',
-      settings: {
-        autoRescale: true,
-        borderSize: 4,
-        labelSize: "fixed",
-        defaultEdgeColor: '#B1B1B1',
-        edgeColor: 'default',
-        minNodeSize: 0.2,
-        maxNodeSize: 20,
-        labelThreshold: 15
+  var s = new sigma({
+    renderers: [
+      {
+        type: 'canvas',
+        container: document.getElementById('sigma-container'),
+        freeStyle: true
       }
-    },
+    ],
+    settings: {
+      autoRescale: true,
+      borderSize: 6,
+      labelSize: "fixed",
+      defaultEdgeColor: '#B1B1B1',
+      edgeColor: 'default',
+      minNodeSize: 0.2,
+      maxNodeSize: 25,
+      labelThreshold: 15
+    }
+  })
+
+  sigma.parsers.gexf('file/data/graph2.gexf',
+    s,
     function (s) {
       // We first need to save the original colors of our
       // nodes and edges, like this:
@@ -122,6 +142,11 @@
       // We do the same for the edges, and we only keep
       // edges that have both extremities colored.
       s.bind('clickNode', function (e) {
+
+        var selected = [];
+        selected[e.data.node.id] = e.data.node;
+        showSelectedNodes(selected);
+
         var nodeId = e.data.node.id,
           toKeep = s.graph.neighbors(nodeId);
         toKeep[nodeId] = e.data.node;
@@ -134,11 +159,14 @@
         });
 
         s.graph.edges().forEach(function (e) {
-          if (toKeep[e.source] && toKeep[e.target])
-            e.color = e.originalColor;
-          else
+          if (toKeep[e.source] && toKeep[e.target]) {
+            e.color = '#FF0000';
+          } else {
             e.color = '#eee';
+          }
         });
+
+        e.data.node.color = '#FF0000'
 
         // Since the data has been modified, we need to
         // call the refresh method to make the colors
@@ -160,5 +188,194 @@
         // Same as in the previous event:
         s.refresh();
       });
+      s.refresh();
+      populateSearchList(s.graph.nodes());
+
+      // Add event listeners to buttons
+      var inputBox = document.getElementById('search-input');
+      inputBox.addEventListener("change", searchChange);
     });
+
+  function searchChange(e) {
+    var selected = [];
+    var value = e.target.value;
+
+    // Add node to selected
+    s.graph.nodes().forEach(function (n) {
+      if (n.label == value) {
+        if (!selected[n.id]) {
+          selected[n.id] = n;
+        }
+      }
+    });
+    nodeSelect(s, selected);
+  }
+
+  function populateSearchList(nodes) {
+    var container = document.getElementById('nodes-datalist');
+    nodes.forEach(function (n) {
+      var item = document.createElement('option');
+      item.value = n.label;
+      container.appendChild(item);
+    });
+  }
+
+  getColor = {
+    "0": "#F012BE",
+    "1": "#85144b",
+    "2": "#2ECC40",
+    "3": "#a9a9a9",
+    "4": "#33805d",
+    "5": "#222a2a",
+    "6": "#FF4136",
+    "7": "#001F3F",
+    "8": "#FFDC00",
+    "9": "#FF851B ",
+  };
+
+  // Show all selected nodes next to the notes for quick reference
+  function showSelectedNodes(selected) {
+    // Remove old selecteed nodes
+    document.querySelectorAll('.selected-node').forEach(function (a) {
+      a.remove()
+    });
+
+    if (Object.keys(selected).length > 0) {
+      var selected_container = document.getElementById('selected-nodes');
+      Object.keys(selected).forEach(function (key) {
+        var selected_item = document.createElement("div");
+        selected_item.classList.add('selected-node');
+        selected_item.innerHTML = selected[key].label;
+        selected_container.appendChild(selected_item);
+      });
+    }
+  }
+
+  // Toggle select a node
+  function nodeSelect(s, selected) {
+    // Making sure we have at least one node selected
+    if (Object.keys(selected).length > 0) {
+      var toKeep = nodesToKeep(s, selected);
+
+      setSelectedColor(s, selected, toKeep);
+      // Grey out irrelevant edges 
+      setEdgesToInactive(s, toKeep);
+    } else { // If no nodes are selected after click we just reset the graph
+      resetStates(s);
+    }
+    showSelectedNodes(selected);
+    s.refresh();
+  }
+
+  // Highlight hovered node and relevant nodes by greying out all else
+  function nodeHover(s, node, selected) {
+    var selectedAndHovered = [];
+    // Make a copy of selected and add the hovered node
+    Object.assign(selectedAndHovered, selected);
+    selectedAndHovered[node.id] = node;
+    var toKeep = nodesToKeep(s, selectedAndHovered);
+
+    s.graph.nodes().forEach(function (n) {
+      if (toKeep[n.id]) {
+        n.color = n.originalColor;
+      } else {
+        n.color = '#eee';
+      }
+    });
+    // Grey out irrelevant edges 
+    setEdgesToInactive(s, toKeep);
+    s.refresh();
+  }
+
+  // Return graph to pre-hover state
+  function nodeHoverOut() {
+    // Start clean, and then figure out what needs to be greyed out according to selected nodes
+    resetStates(s);
+
+    if (Object.keys(selected).length > 0) {
+      var toKeep = nodesToKeep(s, selected);
+
+      setSelectedColor(s, selected, toKeep);
+      setEdgesToInactive(s, toKeep);
+    }
+    s.refresh();
+  }
+
+  // Reset all selections
+  function resetStates(s) {
+    s.graph.nodes().forEach(function (n) {
+      n.color = n.originalColor;
+    });
+    s.graph.edges().forEach(function (e) {
+      e.color = e.originalColor;
+    });
+  }
+
+  // Return matching items from two arrays
+  function returnMatchingArrayItems(array1, array2) {
+    retain = [];
+
+    for (var i = 0; i < array1.length; i += 1) {
+      if (array2.indexOf(array1[i]) > -1) {
+        retain.push(array1[i]);
+      }
+    }
+    return retain;
+  }
+
+  // Return matching nodes from two arrays - 
+  // for instance when two nodes are selected only common neighbors should be shown
+  function returnMatchingNodes(array1, array2) {
+    var retainKeys = returnMatchingArrayItems(Object.keys(array1), Object.keys(array2)),
+      retainNodes = [];
+
+    for (let id of retainKeys) {
+      retainNodes[id] = array1[id];
+    }
+    return retainNodes;
+  }
+
+  // Return all relevant nodes to be kept
+  function nodesToKeep(s, selected) {
+    // Make sure selected is not empty when calling this
+    var toKeep,
+      i = 0;
+
+    Object.keys(selected).forEach(function (key) {
+      if (i == 0) {
+        toKeep = s.graph.neighbors(key);
+        toKeep[key] = selected[key];
+      } else {
+        var keep = s.graph.neighbors(key);
+        keep[key] = selected[key];
+        toKeep = returnMatchingNodes(toKeep, keep);
+      }
+      i++;
+    });
+    return toKeep;
+  }
+
+  // Set the color of all selected nodes
+  function setSelectedColor(s, selected, toKeep) {
+    s.graph.nodes().forEach(function (n) {
+
+      if (selected[n.id]) {
+        n.color = n.selectedColor;
+      }
+      else if (!toKeep[n.id]) {
+        n.color = '#eee';
+      }
+    });
+  }
+
+  // Grey out all edges that are not bewteen active nodes
+  function setEdgesToInactive(s, nodesToKeep) {
+    s.graph.edges().forEach(function (e) {
+      if (nodesToKeep[e.source] && nodesToKeep[e.target]) {
+        e.color = e.originalColor;
+      } else {
+        e.color = e.inactiveColor;
+      }
+    });
+  }
 </script>
