@@ -62,7 +62,7 @@
   </div>
 </nav>
 <span id="selected-nodes" class="btn btn-dark"
-  style="margin-top: 5px; margin-right: 10px; z-index: 9; float: right;"></span>
+  style="margin-top: 5px; margin-right: 13px; z-index: 9; float: right;"></span>
 <div id="container">
   <style>
     #sigma-container {
@@ -122,7 +122,7 @@
     }
   })
 
-  sigma.parsers.gexf('file/data/graph2.gexf',
+  sigma.parsers.gexf('gwf_co_author_graph/file/data/graph2.gexf',
     s,
     function (s) {
       // We first need to save the original colors of our
@@ -184,7 +184,7 @@
         s.graph.edges().forEach(function (e) {
           e.color = e.originalColor;
         });
-
+        document.getElementById('search-input').value = "";
         // Same as in the previous event:
         s.refresh();
       });
