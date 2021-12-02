@@ -51,36 +51,79 @@
 <!-- END SIGMA IMPORTS -->
 <script src="gwf_co_author_graph/plugins/sigma.parsers.gexf/gexf-parser.js"></script>
 <script src="gwf_co_author_graph/plugins/sigma.parsers.gexf/sigma.parsers.gexf.js"></script>
+<script src="plugins/sigma.renderers.customShapes/shape-library.js"></script>
+<script src="plugins/sigma.renderers.customShapes/sigma.renderers.customShapes.js"></script>
+<script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+<script src="https://d3js.org/d3-fetch.v1.min.js"></script>
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <nav class="navbar navbar-dark bg-primary">
   <a class="navbar-brand" href="index.html">
-    Global Water Futures Co-Author Graph
+    Global Water Futures
   </a>
-  <div class="node-controls">
-    <div class="search-container">
-      <input id="search-input" list="nodes-datalist" placeholder="Search for a node">
+  <div class="node-controls navbar-right">
+    <div class="search-container" style="float: right;">
+      <div class="input-group">
+        <input id="search-input" class="form-control border-end-0 border" list="nodes-datalist"
+          placeholder="Search for a node" size="40px">
+        <span class="input-group-append">
+          <button class="btn btn-outline-secondary bg-white border-start-0 border-bottom-0 border ms-n5" type="button">
+            <i class="fa fa-search"></i>
+          </button>
+        </span>
+      </div>
     </div>
     <datalist id="nodes-datalist"></datalist>
   </div>
 </nav>
-<div class="container p-3 my-3 border rounded" style="float: left; width: 250px; height: 100%;">
-  <h2 class="centre">Global Water Futures Co-Author Graph</h2>
-  <p>
-    This co-author graph shows a visualization of common author collaborations in the GWF community.
-    It is an undirected graph with <b>nodes</b> representing authors and <b>edges</b> showing co-authorship. The nodes
-    are scaled with the number of gwf publications.
-  </p>
+<div class="container p-3 my-3" style="float: left; width: 320px; height: 60%;">
+  <div
+    style="border: solid; padding: 10px; margin-left:2px; margin-right: 0px; box-shadow: 5px 10px 8px #888888; border-width: 1px; border-radius: 25px;">
+    <h3 class="centre">Global Water Futures Co-Author Graph</h3>
+    <hr>
+    <p>
+      This co-author graph shows a visualization of common author collaborations in the GWF community.<br><br>
+      It is an undirected graph with <b>nodes</b> representing authors and <b>edges</b> showing co-authorship. <br><br>
+      The node sizes
+      are scaled with the number of gwf publications.
+    </p>
+  </div>
+  <div style="margin-top: 30px;" class="text-center">
+    <style>
+      .zoom-button {
+        position: relative;
+        cursor: pointer;
+        z-index: 10;
+        color: #222a2a;
+        background-color: white;
+        font-size: 20px;
+        border-style: solid;
+        border-width: 1px;
+        border-color: #222a2a;
+        align-self: flex-end;
+        width: 60px;
+        height: 60px;
+      }
+    </style>
+    <button type="button" id="zoom-in-button" class="zoom-button zoom-in"><i class="fa fa-search-plus"></i></button>
+    <button type="button" id="zoom-out-button" class="zoom-button zoom-out"><i class="fa fa-search-minus"></i></button>
+    <button type="button" id="refresh-button" class="zoom-button refresh" onClick="window.location.reload();">
+      <i class="fa fa-refresh"></i>
+    </button>
+  </div>
 </div>
+
 <span id="selected-nodes" class="btn btn-dark"
-  style="margin-top: 5px; margin-right: 12px; z-index: 9; float: right;"></span>
+  style="margin-top: 5px; margin-right:13px ; z-index: 9; float: right;"></span>
 <div id="container">
   <style>
     #sigma-container {
       top: 55px;
       bottom: 0;
-      left: 250px;
+      left: 310px;
       right: 0;
       position: absolute;
-      z-index: 1;
     }
   </style>
   <div id="sigma-container"></div>
@@ -122,12 +165,13 @@
     settings: {
       autoRescale: true,
       borderSize: 6,
-      labelSize: "fixed",
       defaultEdgeColor: '#B1B1B1',
       edgeColor: 'default',
       minNodeSize: 0.2,
       maxNodeSize: 25,
-      labelThreshold: 15
+      labelThreshold: 15,
+      labelSize: "proportional",
+      defaultNodeBorderColor: "#FFF"
     }
   })
 
@@ -138,6 +182,7 @@
       // nodes and edges, like this:
       s.graph.nodes().forEach(function (n) {
         n.originalColor = n.color;
+        n.originalLabel = n.label;
       });
 
       s.graph.edges().forEach(function (e) {
@@ -152,7 +197,13 @@
       // edges that have both extremities colored.
       s.bind('clickNode', function (e) {
 
+        s.graph.nodes().forEach(function (n) {
+          n.color = n.originalColor;
+          n.label = n.originalLabel;
+        });
+
         var selected = [];
+
         selected[e.data.node.id] = e.data.node;
         showSelectedNodes(selected);
 
@@ -161,17 +212,19 @@
         toKeep[nodeId] = e.data.node;
 
         s.graph.nodes().forEach(function (n) {
-          if (toKeep[n.id])
+          if (toKeep[n.id]) {
             n.color = n.originalColor;
-          else
+          } else {
             n.color = '#eee';
+            n.label = "";
+          }
         });
 
         s.graph.edges().forEach(function (e) {
           if (toKeep[e.source] && toKeep[e.target]) {
             e.color = '#FF0000';
           } else {
-            e.color = '#eee';
+            e.color = '#FFF';
           }
         });
 
@@ -188,6 +241,7 @@
       s.bind('clickStage', function (e) {
         s.graph.nodes().forEach(function (n) {
           n.color = n.originalColor;
+          n.label = n.originalLabel;
         });
 
         s.graph.edges().forEach(function (e) {
@@ -203,9 +257,18 @@
       // Add event listeners to buttons
       var inputBox = document.getElementById('search-input');
       inputBox.addEventListener("change", searchChange);
+
+      var zoomInButton = document.getElementById('zoom-in-button');
+      zoomInButton.addEventListener("click", zoomIn);
+      var zoomOutButton = document.getElementById('zoom-out-button');
+      zoomOutButton.addEventListener("click", zoomOut);
     });
 
   function searchChange(e) {
+    s.graph.nodes().forEach(function (n) {
+      n.color = n.originalColor;
+      n.label = n.originalLabel;
+    });
     var selected = [];
     var value = e.target.value;
 
@@ -214,10 +277,39 @@
       if (n.label == value) {
         if (!selected[n.id]) {
           selected[n.id] = n;
+          var c = s.camera;
+          sigma.misc.animation.camera(c, {
+            x: n['read_cam0:x'], y: n['read_cam0:y'],
+            ratio: c.ratio / c.settings('zoomingRatio')
+          }, {
+            duration: 700
+          });
         }
       }
     });
     nodeSelect(s, selected);
+  }
+
+  function refresh() {
+    s.refresh();
+  }
+
+  function zoomIn() {
+    var c = s.camera;
+    sigma.misc.animation.camera(c, {
+      ratio: c.ratio / c.settings('zoomingRatio')
+    }, {
+      duration: 700
+    });
+  }
+
+  function zoomOut() {
+    var c = s.camera;
+    sigma.misc.animation.camera(c, {
+      ratio: c.ratio * c.settings('zoomingRatio')
+    }, {
+      duration: 700
+    });
   }
 
   function populateSearchList(nodes) {
@@ -373,6 +465,7 @@
       }
       else if (!toKeep[n.id]) {
         n.color = '#eee';
+        n.label = "";
       }
     });
   }
@@ -383,7 +476,7 @@
       if (nodesToKeep[e.source] && nodesToKeep[e.target]) {
         e.color = e.originalColor;
       } else {
-        e.color = e.inactiveColor;
+        e.color = "#FFF" //e.inactiveColor;
       }
     });
   }
