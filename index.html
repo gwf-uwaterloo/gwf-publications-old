@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <!-- START SIGMA IMPORTS -->
-<script src="gwf_co_author_graph/build/sigma.min.js"></script>
+<script src="build/sigma.min.js"></script>
 <script src="gwf_co_author_graph/src/sigma.core.js"></script>
 <script src="gwf_co_author_graph/src/conrad.js"></script>
 <script src="gwf_co_author_graph/src/utils/sigma.utils.js"></script>
@@ -12,7 +12,7 @@
 <script src="gwf_co_author_graph/src/classes/sigma.classes.camera.js"></script>
 <script src="gwf_co_author_graph/src/classes/sigma.classes.quad.js"></script>
 <script src="gwf_co_author_graph/src/classes/sigma.classes.edgequad.js"></script>
-<script src="gwf_co_author_graph/rc/captors/sigma.captors.mouse.js"></script>
+<script src="gwf_co_author_graph/src/captors/sigma.captors.mouse.js"></script>
 <script src="gwf_co_author_graph/src/captors/sigma.captors.touch.js"></script>
 <script src="gwf_co_author_graph/src/renderers/sigma.renderers.canvas.js"></script>
 <script src="gwf_co_author_graph/src/renderers/sigma.renderers.webgl.js"></script>
@@ -50,12 +50,36 @@
 <!-- END SIGMA IMPORTS -->
 <script src="gwf_co_author_graph/plugins/sigma.parsers.gexf/gexf-parser.js"></script>
 <script src="gwf_co_author_graph/plugins/sigma.parsers.gexf/sigma.parsers.gexf.js"></script>
-<script src="plugins/sigma.renderers.customShapes/shape-library.js"></script>
-<script src="plugins/sigma.renderers.customShapes/sigma.renderers.customShapes.js"></script>
+<script src="gwf_co_author_graph/plugins/sigma.renderers.customShapes/shape-library.js"></script>
+<script src="gwf_co_author_graph/plugins/sigma.renderers.customShapes/sigma.renderers.customShapes.js"></script>
 <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
 <script src="https://d3js.org/d3-fetch.v1.min.js"></script>
 <!-- Add icon library -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+  .checkbox-round {
+    width: 1.3em;
+    height: 1.3em;
+    background-color: white;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 3px solid rgb(107, 131, 20);
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .checkbox-round:checked {
+    background-color: white;
+  }
+
+  .label-round {
+    font-family: Verdana, sans-serif;
+    font-size: smaller;
+    padding-left: 5px;
+  }
+</style>
 
 <nav class="navbar navbar-dark bg-primary">
   <a class="navbar-brand" href="index.html">
@@ -77,19 +101,26 @@
   </div>
 </nav>
 <div class="container p-3 my-3"
-  style="float: left; width: 320px; height: 70%; position: relative; z-index: 20; align-self: flex-end;">
+  style="float: left; width: 400px; height: 70%; position: relative; z-index: 20; align-self: flex-end;">
   <div
-    style="border: solid; padding: 10px; margin-left:2px; margin-right: 0px; box-shadow: 5px 10px 8px #888888; border-width: 1px; border-radius: 25px; background-color: white;">
+    style="border: solid; padding: 10px; margin-left:2px; margin-right: 0px; box-shadow: 5px 10px 8px #888888; border-width: 1px; background-color: white;">
     <h3 class="centre">Global Water Futures Co-Author
       Graph</h3>
-    <hr>
+    <hr style="border-top: 3px dotted;">
     <p>
       This co-author graph shows a visualization of common author collaborations in the GWF community.<br><br>
-      It is an undirected graph with <b>nodes</b> representing authors and <b>edges</b> showing co-authorship. <br><br>
-      The node sizes
-      are scaled with the number of gwf publications.
+      It is an undirected graph with <b>nodes</b> representing authors and <b>edges</b> showing co-authorship. <br>
     </p>
     <img src="gwf_co_author_graph/file/images/img01.png" width="250px">
+  </div>
+  <div style="border: solid; padding: 10px; margin-left:2px; margin-right: 0px; box-shadow: 5px 10px 8px #888888;
+    border-width: 1px; background-color: white; margin-top: 5px; overflow: scroll; height: 300px;">
+
+    <h3>Affiliations</h3>
+    <hr>
+    <div class="checkbox-container" id="checkbox-container">
+    </div>
+
   </div>
   <div style="margin-top: 30px;" class="text-center">
     <style>
@@ -144,6 +175,9 @@
    */
 
   var selected = [];
+  var attr_color = {};
+  var selectedAffiliation = [];
+  var value_list = [];
 
   sigma.classes.graph.addMethod('neighbors', function (nodeId) {
     var k,
@@ -177,7 +211,7 @@
     }
   })
 
-  sigma.parsers.gexf('gwf_co_author_graph/file/data/graph2.gexf',
+  sigma.parsers.gexf('gwf_co_author_graph/file/data/aff_author.gexf',
     s,
     function (s) {
       // We first need to save the original colors of our
@@ -252,9 +286,16 @@
         document.getElementById('search-input').value = "";
         // Same as in the previous event:
         s.refresh();
+
+        document.querySelectorAll('.checkbox-round').forEach(function (a) {
+          a.checked = false;
+          a.style.cssText = "background-color: white; border: 4px solid " + attr_color[a.value];
+        });
+
       });
       s.refresh();
       populateSearchList(s.graph.nodes());
+      populateAffiliations(s.graph.nodes());
 
       // Add event listeners to buttons
       var inputBox = document.getElementById('search-input');
@@ -323,6 +364,116 @@
     });
   }
 
+  function populateAffiliations(nodes) {
+    var container = document.getElementById('checkbox-container');
+    var attr = {};
+
+    nodes.forEach(function (n) {
+      if (n.attributes.affiliation in attr) {
+        attr[n.attributes.affiliation] += 1;
+      } else {
+        attr_color[n.attributes.affiliation] = n.viz.color;
+        attr[n.attributes.affiliation] = 1;
+      }
+    });
+
+    // Create items array
+    var items = Object.keys(attr).map(function (key) {
+      return [key, attr[key]];
+    });
+
+    // Sort the array based on the second element
+    items.sort(function (first, second) {
+      return second[1] - first[1];
+    });
+
+    attr_new = {}
+    for (i = 0; i < items.length; i++) {
+      attr_new[items[i][0]] = items[i][0];
+    }
+
+    for (const [key, value] of Object.entries(attr_new)) {
+      if (key != 'undefined') {
+        var input = document.createElement("input");
+        input.type = "checkbox";
+        input.classList.add("checkbox-round");
+        input.style.cssText = "border: 4px solid " + attr_color[key]
+        input.checked = false;
+        input.value = key;
+        input.addEventListener("click", filterNodesAffl)
+        container.appendChild(input);
+
+        var label = document.createElement("label");
+        label.classList.add("label-round");
+        label.innerText = key;
+        label.style.cssText = "border-bottom: 5px solid " + attr_color[key]
+        container.appendChild(label);
+
+        // Append a line break 
+        container.appendChild(document.createElement("br"));
+      }
+    };
+  }
+
+
+  function filterNodesAffl(e) {
+    if (!(selectedAffiliation.includes(e.target))) {
+      selectedAffiliation.push(e.target);
+    }
+
+    for (var aff of selectedAffiliation) {
+
+      var value = aff.value;
+
+      if (aff.checked == false) {
+        aff.style.cssText = "background-color: white; border: 4px solid " + attr_color[value];
+
+        if (selectedAffiliation == 0) {
+          s.graph.nodes().forEach(function (n) {
+            n.color = n.originalColor;
+          });
+        } else {
+          selectedAffiliation.splice(selectedAffiliation.indexOf(aff), 1);
+          value_list.splice(value_list.indexOf(value), 1);
+
+          if (selectedAffiliation == 0) {
+            s.graph.nodes().forEach(function (n) {
+              n.color = n.originalColor;
+            });
+          } else {
+            s.graph.nodes().forEach(function (n) {
+              if (value_list.includes(n.attributes.affiliation)) {
+                n.color = n.originalColor;
+              } else {
+                n.color = '#eee';
+                n.label = "";
+              }
+            });
+          }
+
+        }
+
+      } else {
+        if (!(value_list.includes(value))) {
+          value_list.push(value);
+        }
+        aff.style.cssText += "background-color: " + attr_color[value];
+        s.graph.nodes().forEach(function (n) {
+          if (value_list.includes(n.attributes.affiliation)) {
+            n.color = n.originalColor;
+          } else {
+            n.color = '#eee';
+            n.label = "";
+          }
+        });
+      }
+    }
+
+
+
+    s.refresh();
+  }
+
   getColor = {
     "0": "#F012BE",
     "1": "#85144b",
@@ -348,7 +499,9 @@
       Object.keys(selected).forEach(function (key) {
         var selected_item = document.createElement("div");
         selected_item.classList.add('selected-node');
-        selected_item.innerHTML = selected[key].label;
+        selected_item.innerHTML = selected[key].label +
+          "<br>" + selected[key].attributes.affiliation + "<br><a href='" + selected[key].attributes.url
+          + "' target='_blank' style='color:white;'>Google Scholar</a>"
         selected_container.appendChild(selected_item);
       });
     }
@@ -482,4 +635,6 @@
       }
     });
   }
+
+
 </script>
