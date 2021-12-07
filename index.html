@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <!-- START SIGMA IMPORTS -->
-<script src="build/sigma.min.js"></script>
+<script src="gwf_co_author_graph/build/sigma.min.js"></script>
 <script src="gwf_co_author_graph/src/sigma.core.js"></script>
 <script src="gwf_co_author_graph/src/conrad.js"></script>
 <script src="gwf_co_author_graph/src/utils/sigma.utils.js"></script>
@@ -57,6 +57,10 @@
 <!-- Add icon library -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
+  body {
+    background-color: snow;
+  }
+
   .checkbox-round {
     width: 1.3em;
     height: 1.3em;
@@ -81,7 +85,7 @@
   }
 </style>
 
-<nav class="navbar navbar-dark bg-primary">
+<nav class="navbar navbar-dark bg-dark">
   <a class="navbar-brand" href="index.html">
     Global Water Futures
   </a>
@@ -101,7 +105,7 @@
   </div>
 </nav>
 <div class="container p-3 my-3"
-  style="float: left; width: 400px; height: 70%; position: relative; z-index: 20; align-self: flex-end;">
+  style="float: left; width: 380px; height: 70%; position: relative; z-index: 20; align-self: flex-end;">
   <div
     style="border: solid; padding: 10px; margin-left:2px; margin-right: 0px; box-shadow: 5px 10px 8px #888888; border-width: 1px; background-color: white;">
     <h3 class="centre">Global Water Futures Co-Author
@@ -111,7 +115,7 @@
       This co-author graph shows a visualization of common author collaborations in the GWF community.<br><br>
       It is an undirected graph with <b>nodes</b> representing authors and <b>edges</b> showing co-authorship. <br>
     </p>
-    <img src="gwf_co_author_graph/file/images/img01.png" width="250px">
+    <img src="file/images/img01.png" width="250px">
   </div>
   <div style="border: solid; padding: 10px; margin-left:2px; margin-right: 0px; box-shadow: 5px 10px 8px #888888;
     border-width: 1px; background-color: white; margin-top: 5px; overflow: scroll; height: 300px;">
@@ -179,6 +183,7 @@
   var selectedAffiliation = [];
   var value_list = [];
 
+
   sigma.classes.graph.addMethod('neighbors', function (nodeId) {
     var k,
       neighbors = {},
@@ -203,15 +208,18 @@
       borderSize: 6,
       defaultEdgeColor: '#B1B1B1',
       edgeColor: 'default',
-      minNodeSize: 0.2,
-      maxNodeSize: 25,
-      labelThreshold: 15,
+      minNodeSize: 0.5,
+      maxNodeSize: 30,
+      labelThreshold: 10,
       labelSize: "proportional",
-      defaultNodeBorderColor: "#FFF"
+      defaultNodeBorderColor: "#FFF",
+      scalingMode: 'outside',
+      sideMargin: 1,
+      maxEdgeSize: 2
     }
   })
 
-  sigma.parsers.gexf('gwf_co_author_graph/file/data/aff_author.gexf',
+  sigma.parsers.gexf('gwf_co_author_graph/file/data/not_force_atlas.gexf',
     s,
     function (s) {
       // We first need to save the original colors of our
