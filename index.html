@@ -51,6 +51,8 @@
 <!-- END SIGMA IMPORTS -->
 <script src="gwf_co_author_graph/plugins/sigma.parsers.gexf/gexf-parser.js"></script>
 <script src="gwf_co_author_graph/plugins/sigma.parsers.gexf/sigma.parsers.gexf.js"></script>
+<script src="gwf_co_author_graph/plugins/sigma.layout.noverlap/sigma.layout.noverlap.js"></script>
+<script src="gwf_co_author_graph/plugins/sigma.plugins.animate/sigma.plugins.animate.js"></script>
 <script src="gwf_co_author_graph/plugins/sigma.renderers.customShapes/shape-library.js"></script>
 <script src="gwf_co_author_graph/plugins/sigma.renderers.customShapes/sigma.renderers.customShapes.js"></script>
 <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
@@ -220,7 +222,7 @@
     }
   })
 
-  sigma.parsers.gexf('gwf_co_author_graph/file/data/not_force_atlas.gexf',
+  sigma.parsers.gexf('gwf_co_author_graph/file/data/force_atlas_new.gexf',
     s,
     function (s) {
       // We first need to save the original colors of our
