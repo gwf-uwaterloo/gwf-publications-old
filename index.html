@@ -65,8 +65,8 @@
   }
 
   .checkbox-round {
-    width: 1.3em;
-    height: 1.3em;
+    width: 1.1em;
+    height: 1.1em;
     background-color: white;
     border-radius: 50%;
     vertical-align: middle;
@@ -83,7 +83,7 @@
 
   .label-round {
     font-family: Verdana, sans-serif;
-    font-size: smaller;
+    font-size: 12px;
     padding-left: 5px;
   }
 </style>
@@ -213,14 +213,17 @@
       edgeColor: 'default',
       minNodeSize: 0.001,
       maxNodeSize: 25,
-      labelThreshold: 15,
+      labelThreshold: 12,
       labelSize: "fixed",
       defaultNodeBorderColor: "#FFF",
       scalingMode: 'inside',
       sideMargin: 1,
       batchEdgesDrawing: true,
       hideEdgesOnMove: true,
-      animationsTime: 5000
+      animationsTime: 5000,
+      labelHoverBGColor: '#E0E0E0',
+      defaultHoverLabelBGColor: '#E0E0E0',
+      defaultNodeBorderColor: '#E0E0E0'
     }
   })
 
@@ -277,7 +280,7 @@
           }
         });
 
-        e.data.node.color = '#d9534f'
+        e.data.node.color = e.data.node.originalColor
 
         // Since the data has been modified, we need to
         // call the refresh method to make the colors
@@ -652,7 +655,7 @@
     s.graph.nodes().forEach(function (n) {
 
       if (selected[n.id]) {
-        n.color = "#d9534f";
+        n.color = n.originalColor;
       }
       else if (!toKeep[n.id]) {
         n.color = '#eee';
