@@ -185,8 +185,6 @@
   var attr_color = {};
   var selectedAffiliation = [];
   var value_list = [];
-  sigma.settings.nodesPowRatio = 1;
-  sigma.settings.autoRescale = false;
 
 
   sigma.classes.graph.addMethod('neighbors', function (nodeId) {
@@ -216,7 +214,7 @@
       minNodeSize: 0.001,
       maxNodeSize: 25,
       labelThreshold: 15,
-      labelSize: "proportional",
+      labelSize: "fixed",
       defaultNodeBorderColor: "#FFF",
       scalingMode: 'inside',
       sideMargin: 1,
