@@ -1,5 +1,6 @@
 <title>GWF Co Author Graph</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="style.css">
 <!-- START SIGMA IMPORTS -->
 <script src="gwf_co_author_graph/build/sigma.min.js"></script>
 <script src="gwf_co_author_graph/src/sigma.core.js"></script>
@@ -59,35 +60,6 @@
 <script src="https://d3js.org/d3-fetch.v1.min.js"></script>
 <!-- Add icon library -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-  body {
-    background-color: snow;
-  }
-
-  .checkbox-round {
-    width: 1.1em;
-    height: 1.1em;
-    background-color: white;
-    border-radius: 50%;
-    vertical-align: middle;
-    border: 3px solid rgb(107, 131, 20);
-    appearance: none;
-    -webkit-appearance: none;
-    outline: none;
-    cursor: pointer;
-  }
-
-  .checkbox-round:checked {
-    background-color: white;
-  }
-
-  .label-round {
-    font-family: Verdana, sans-serif;
-    font-size: 12px;
-    padding-left: 5px;
-  }
-</style>
-
 <nav class="navbar navbar-dark bg-dark">
   <a class="navbar-brand" href="index.html">
     Global Water Futures
@@ -130,22 +102,6 @@
 
   </div>
   <div style="margin-top: 30px;" class="text-center">
-    <style>
-      .zoom-button {
-        position: relative;
-        cursor: pointer;
-        z-index: 10;
-        color: #222a2a;
-        background-color: white;
-        font-size: 20px;
-        border-style: solid;
-        border-width: 1px;
-        border-color: #222a2a;
-        align-self: flex-end;
-        width: 60px;
-        height: 60px;
-      }
-    </style>
     <button type="button" id="zoom-in-button" class="zoom-button zoom-in"><i class="fa fa-search-plus"></i></button>
     <button type="button" id="zoom-out-button" class="zoom-button zoom-out"><i class="fa fa-search-minus"></i></button>
     <button type="button" id="refresh-button" class="zoom-button refresh" onClick="window.location.reload();">
@@ -157,15 +113,6 @@
 <span id="selected-nodes" class="btn btn-danger"
   style="margin-top: 5px; margin-right:13px ; z-index: 25; float: right; position: relative;"></span>
 <div id="container">
-  <style>
-    #sigma-container {
-      top: 55px;
-      bottom: 0;
-      left: 0px;
-      right: 0;
-      position: absolute;
-    }
-  </style>
   <div id="sigma-container"></div>
 </div>
 <script src="index.js"></script>
