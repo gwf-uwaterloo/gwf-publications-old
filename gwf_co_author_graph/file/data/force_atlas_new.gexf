@@ -172,7 +172,7 @@
           <attvalue for="author_name" value="S. Carey"></attvalue>
           <attvalue for="num_authored" value="12"></attvalue>
           <attvalue for="modularity_class" value="2"></attvalue>
-          <attvalue for="affiliation" value="University of Saskatchewan"></attvalue>
+          <attvalue for="affiliation" value="McMaster University"></attvalue>
           <attvalue for="url" value="https://scholar.google.ca/citations?user=nPStyFgAAAAJ&amp;hl=en"></attvalue>
         </attvalues>
         <viz:size value="174.54546"></viz:size>
