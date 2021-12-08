@@ -213,7 +213,7 @@
       edgeColor: 'default',
       minNodeSize: 0.001,
       maxNodeSize: 25,
-      labelThreshold: 15,
+      labelThreshold: 12,
       labelSize: "fixed",
       defaultNodeBorderColor: "#FFF",
       scalingMode: 'inside',
@@ -280,7 +280,7 @@
           }
         });
 
-        e.data.node.color = '#d9534f'
+        e.data.node.color = e.data.node.originalColor
 
         // Since the data has been modified, we need to
         // call the refresh method to make the colors
