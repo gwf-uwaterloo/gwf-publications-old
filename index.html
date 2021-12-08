@@ -185,6 +185,8 @@
   var attr_color = {};
   var selectedAffiliation = [];
   var value_list = [];
+  sigma.settings.nodesPowRatio = 1;
+  sigma.settings.autoRescale = false;
 
 
   sigma.classes.graph.addMethod('neighbors', function (nodeId) {
@@ -211,18 +213,20 @@
       borderSize: 6,
       defaultEdgeColor: '#B1B1B1',
       edgeColor: 'default',
-      minNodeSize: 0.5,
-      maxNodeSize: 30,
-      labelThreshold: 10,
+      minNodeSize: 0.001,
+      maxNodeSize: 25,
+      labelThreshold: 15,
       labelSize: "proportional",
       defaultNodeBorderColor: "#FFF",
-      //scalingMode: 'outside',
+      scalingMode: 'inside',
       sideMargin: 1,
-      maxEdgeSize: 2
+      batchEdgesDrawing: true,
+      hideEdgesOnMove: true,
+      animationsTime: 5000
     }
   })
 
-  sigma.parsers.gexf('gwf_co_author_graph/file/data/force_atlas_new.gexf',
+  sigma.parsers.gexf('file/data/force_atlas_new.gexf',
     s,
     function (s) {
       // We first need to save the original colors of our
@@ -304,6 +308,8 @@
         });
 
       });
+
+
       s.refresh();
       populateSearchList(s.graph.nodes());
       populateAffiliations(s.graph.nodes());
@@ -316,6 +322,27 @@
       zoomInButton.addEventListener("click", zoomIn);
       var zoomOutButton = document.getElementById('zoom-out-button');
       zoomOutButton.addEventListener("click", zoomOut);
+
+      // Configure the noverlap layout:
+      var noverlapListener = s.configNoverlap({
+        nodeMargin: 0.5,
+        scaleNodes: 1.1,
+        gridSize: 50,
+        easing: 'quadraticInOut', // animation transition function
+        duration: 100   // animation duration. Long here for the purposes of this example only
+      });
+      // Bind the events:
+      noverlapListener.bind('start stop interpolate', function (e) {
+        console.log(e.type);
+        if (e.type === 'start') {
+          console.time('noverlap');
+        }
+        if (e.type === 'interpolate') {
+          console.timeEnd('noverlap');
+        }
+      });
+      // Start the layout:
+      s.startNoverlap();
     });
 
   function searchChange(e) {
@@ -646,4 +673,6 @@
       }
     });
   }
+
+
 </script>
