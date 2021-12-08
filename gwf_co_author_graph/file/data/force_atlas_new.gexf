@@ -172,7 +172,7 @@
           <attvalue for="author_name" value="S. Carey"></attvalue>
           <attvalue for="num_authored" value="12"></attvalue>
           <attvalue for="modularity_class" value="2"></attvalue>
-          <attvalue for="affiliation" value="University of Saskatchewan"></attvalue>
+          <attvalue for="affiliation" value="McMaster University"></attvalue>
           <attvalue for="url" value="https://scholar.google.ca/citations?user=nPStyFgAAAAJ&amp;hl=en"></attvalue>
         </attvalues>
         <viz:size value="174.54546"></viz:size>
@@ -3077,7 +3077,7 @@
         <viz:position x="-2267.5493" y="3119.165"></viz:position>
         <viz:color r="7" g="87" b="68"></viz:color>
       </node>
-      <node id="155" label="Fran�ois-Nicolas Robinne">
+      <node id="155" label="François-Nicolas Robinne">
         <attvalues>
           <attvalue for="author_id" value="23630857"></attvalue>
           <attvalue for="author_name" value="F. Robinne"></attvalue>
