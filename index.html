@@ -65,8 +65,8 @@
   }
 
   .checkbox-round {
-    width: 1.3em;
-    height: 1.3em;
+    width: 1.1em;
+    height: 1.1em;
     background-color: white;
     border-radius: 50%;
     vertical-align: middle;
@@ -83,7 +83,7 @@
 
   .label-round {
     font-family: Verdana, sans-serif;
-    font-size: smaller;
+    font-size: 12px;
     padding-left: 5px;
   }
 </style>
@@ -655,7 +655,7 @@
     s.graph.nodes().forEach(function (n) {
 
       if (selected[n.id]) {
-        n.color = "#d9534f";
+        n.color = n.originalColor;
       }
       else if (!toKeep[n.id]) {
         n.color = '#eee';

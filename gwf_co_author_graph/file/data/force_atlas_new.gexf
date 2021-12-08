@@ -198,7 +198,7 @@
           <attvalue for="author_name" value="O. Sonnentag"></attvalue>
           <attvalue for="num_authored" value="16"></attvalue>
           <attvalue for="modularity_class" value="2"></attvalue>
-          <attvalue for="affiliation" value="Universit� de Montr�al"></attvalue>
+          <attvalue for="affiliation" value="Université de Montréal"></attvalue>
           <attvalue for="url" value="https://scholar.google.ca/citations?user=-6t6ADwAAAAJ&amp;hl=en"></attvalue>
         </attvalues>
         <viz:size value="216.36363"></viz:size>
@@ -1037,7 +1037,7 @@
           <attvalue for="author_name" value="A. Desai"></attvalue>
           <attvalue for="num_authored" value="4"></attvalue>
           <attvalue for="modularity_class" value="2"></attvalue>
-          <attvalue for="affiliation" value="University of Wisconsin�Madison"></attvalue>
+          <attvalue for="affiliation" value="University of Wisconsin-Madison"></attvalue>
         </attvalues>
         <viz:size value="90.90909"></viz:size>
         <viz:position x="-587.3973" y="-4812.186"></viz:position>
@@ -2028,7 +2028,7 @@
           <attvalue for="author_name" value="Zhihua Liu"></attvalue>
           <attvalue for="num_authored" value="3"></attvalue>
           <attvalue for="modularity_class" value="5"></attvalue>
-          <attvalue for="affiliation" value="State Key Lab of Molecular Oncology, National Cancer Center, Cancer Hospital, Chinese …"></attvalue>
+          <attvalue for="affiliation" value="National Cancer Center"></attvalue>
           <attvalue for="url" value="https://scholar.google.ca/citations?user=bAymIiAAAAAJ&amp;hl=en"></attvalue>
         </attvalues>
         <viz:size value="80.454544"></viz:size>
@@ -2248,7 +2248,7 @@
           <attvalue for="author_name" value="T. Christensen"></attvalue>
           <attvalue for="num_authored" value="2"></attvalue>
           <attvalue for="modularity_class" value="5"></attvalue>
-          <attvalue for="affiliation" value="Aarhus"></attvalue>
+          <attvalue for="affiliation" value="Aarhus University"></attvalue>
           <attvalue for="url" value="https://scholar.google.ca/citations?user=QIp-jjUAAAAJ&amp;hl=en"></attvalue>
         </attvalues>
         <viz:size value="70.0"></viz:size>
@@ -2434,7 +2434,7 @@
           <attvalue for="author_name" value="J. Jastrow"></attvalue>
           <attvalue for="num_authored" value="2"></attvalue>
           <attvalue for="modularity_class" value="5"></attvalue>
-          <attvalue for="affiliation" value="Senior Terrestrial Ecologist, Argonne National Laboratory"></attvalue>
+          <attvalue for="affiliation" value="Argonne National Laboratory"></attvalue>
           <attvalue for="url" value="https://scholar.google.ca/citations?user=56JH5S4AAAAJ&amp;hl=en"></attvalue>
         </attvalues>
         <viz:size value="70.0"></viz:size>
@@ -2864,7 +2864,7 @@
           <attvalue for="author_name" value="A. Roy"></attvalue>
           <attvalue for="num_authored" value="2"></attvalue>
           <attvalue for="modularity_class" value="0"></attvalue>
-          <attvalue for="affiliation" value="Universit� du Qu�bec � Trois-Rivi�res"></attvalue>
+          <attvalue for="affiliation" value="Université du Québec à Trois Rivières"></attvalue>
           <attvalue for="url" value="https://scholar.google.ca/citations?user=FtLI3IIAAAAJ&amp;hl=en"></attvalue>
         </attvalues>
         <viz:size value="70.0"></viz:size>
@@ -3337,7 +3337,7 @@
           <attvalue for="author_name" value="Qiaohong Sun"></attvalue>
           <attvalue for="num_authored" value="3"></attvalue>
           <attvalue for="modularity_class" value="1"></attvalue>
-          <attvalue for="affiliation" value="Pacific Climate Impacts Consortium, University of Victoria"></attvalue>
+          <attvalue for="affiliation" value="University of Victoria"></attvalue>
           <attvalue for="url" value="https://scholar.google.ca/citations?user=c4pfJTIAAAAJ&amp;hl=en"></attvalue>
         </attvalues>
         <viz:size value="80.454544"></viz:size>
@@ -3531,7 +3531,7 @@
           <attvalue for="author_name" value="A. Sadeghian"></attvalue>
           <attvalue for="num_authored" value="2"></attvalue>
           <attvalue for="modularity_class" value="0"></attvalue>
-          <attvalue for="affiliation" value="Director of R&amp;D at Aibee, PhD Stanford University"></attvalue>
+          <attvalue for="affiliation" value="Stanford University"></attvalue>
           <attvalue for="url" value="https://scholar.google.ca/citations?user=ZqbHW0gAAAAJ&amp;hl=en"></attvalue>
         </attvalues>
         <viz:size value="70.0"></viz:size>
@@ -3937,7 +3937,7 @@
           <attvalue for="author_name" value="T. Milojevic"></attvalue>
           <attvalue for="num_authored" value="2"></attvalue>
           <attvalue for="modularity_class" value="1"></attvalue>
-          <attvalue for="affiliation" value="�cole polytechnique f�d�rale de Lausanne"></attvalue>
+          <attvalue for="affiliation" value="Ecole polytechnique federale de Lausanne"></attvalue>
           <attvalue for="url" value="https://scholar.google.ca/citations?user=w1koIT8AAAAJ&amp;hl=en"></attvalue>
         </attvalues>
         <viz:size value="70.0"></viz:size>
