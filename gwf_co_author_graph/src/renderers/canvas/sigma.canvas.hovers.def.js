@@ -1,4 +1,4 @@
-;(function(undefined) {
+; (function (undefined) {
   'use strict';
 
   if (typeof sigma === 'undefined')
@@ -14,18 +14,18 @@
    * @param  {CanvasRenderingContext2D} context  The canvas context.
    * @param  {configurable}             settings The settings function.
    */
-  sigma.canvas.hovers.def = function(node, context, settings) {
+  sigma.canvas.hovers.def = function (node, context, settings) {
     var x,
-        y,
-        w,
-        h,
-        e,
-        fontStyle = settings('hoverFontStyle') || settings('fontStyle'),
-        prefix = settings('prefix') || '',
-        size = node[prefix + 'size'],
-        fontSize = (settings('labelSize') === 'fixed') ?
-          settings('defaultLabelSize') :
-          settings('labelSizeRatio') * size;
+      y,
+      w,
+      h,
+      e,
+      fontStyle = settings('hoverFontStyle') || settings('fontStyle'),
+      prefix = settings('prefix') || '',
+      size = node[prefix + 'size'],
+      fontSize = (settings('labelSize') === 'fixed') ?
+        settings('defaultLabelSize') :
+        settings('labelSizeRatio') * size;
 
     // Label background:
     context.font = (fontStyle ? fontStyle + ' ' : '') +
@@ -71,9 +71,17 @@
     // Node border:
     if (settings('borderSize') > 0) {
       context.beginPath();
-      context.fillStyle = settings('nodeBorderColor') === 'node' ?
-        (node.color || settings('defaultNodeColor')) :
-        settings('defaultNodeBorderColor');
+
+      if (node['nodeBorderColor']) {
+        context.fillStyle = settings('nodeBorderColor') === 'node' ?
+          (node.color || settings('defaultNodeColor')) :
+          node['nodeBorderColor'];
+      } else {
+        context.fillStyle = settings('nodeBorderColor') === 'node' ?
+          (node.color || settings('defaultNodeColor')) :
+          settings('defaultNodeBorderColor');
+      }
+
       context.arc(
         node[prefix + 'x'],
         node[prefix + 'y'],

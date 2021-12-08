@@ -44,7 +44,6 @@ var s = new sigma({
         maxNodeSize: 25,
         labelThreshold: 12,
         labelSize: "fixed",
-        defaultNodeBorderColor: "#FFF",
         scalingMode: 'inside',
         sideMargin: 1,
         batchEdgesDrawing: true,
@@ -52,7 +51,8 @@ var s = new sigma({
         animationsTime: 5000,
         labelHoverBGColor: '#E0E0E0',
         defaultHoverLabelBGColor: '#E0E0E0',
-        defaultNodeBorderColor: '#E0E0E0'
+        defaultNodeBorderColor: '#E0E0E0',
+        zoomingRatio: 2.0
     }
 })
 
