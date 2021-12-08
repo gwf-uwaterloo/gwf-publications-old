@@ -77,9 +77,17 @@
     // Node border:
     if (settings('borderSize') > 0) {
       context.beginPath();
-      context.fillStyle = settings('nodeBorderColor') === 'node' ?
-        (node.color || settings('defaultNodeColor')) :
-        settings('defaultNodeBorderColor');
+
+      if (node['nodeBorderColor']) {
+        context.fillStyle = settings('nodeBorderColor') === 'node' ?
+          (node.color || settings('defaultNodeColor')) :
+          node['nodeBorderColor'];
+      } else {
+        context.fillStyle = settings('nodeBorderColor') === 'node' ?
+          (node.color || settings('defaultNodeColor')) :
+          settings('defaultNodeBorderColor');
+      }
+
       context.arc(
         node[prefix + 'x'],
         node[prefix + 'y'],

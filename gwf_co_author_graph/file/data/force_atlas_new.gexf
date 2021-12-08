@@ -3077,7 +3077,7 @@
         <viz:position x="-2267.5493" y="3119.165"></viz:position>
         <viz:color r="7" g="87" b="68"></viz:color>
       </node>
-      <node id="155" label="Fran�ois-Nicolas Robinne">
+      <node id="155" label="François-Nicolas Robinne">
         <attvalues>
           <attvalue for="author_id" value="23630857"></attvalue>
           <attvalue for="author_name" value="F. Robinne"></attvalue>

@@ -79,6 +79,7 @@ sigma.parsers.gexf('gwf_co_author_graph/file/data/force_atlas_new.gexf',
         s.bind('clickNode', function (e) {
 
             s.graph.nodes().forEach(function (n) {
+                delete n['nodeBorderColor']
                 n.color = n.originalColor;
                 n.label = n.originalLabel;
             });
@@ -109,6 +110,7 @@ sigma.parsers.gexf('gwf_co_author_graph/file/data/force_atlas_new.gexf',
                 }
             });
 
+            e.data.node.nodeBorderColor = '#000'
             e.data.node.color = e.data.node.originalColor
 
             // Since the data has been modified, we need to
@@ -121,6 +123,7 @@ sigma.parsers.gexf('gwf_co_author_graph/file/data/force_atlas_new.gexf',
         // node and edge with its original color.
         s.bind('clickStage', function (e) {
             s.graph.nodes().forEach(function (n) {
+                delete n['nodeBorderColor'];
                 n.color = n.originalColor;
                 n.label = n.originalLabel;
             });
@@ -177,6 +180,7 @@ sigma.parsers.gexf('gwf_co_author_graph/file/data/force_atlas_new.gexf',
 
 function searchChange(e) {
     s.graph.nodes().forEach(function (n) {
+        delete n['nodeBorderColor'];
         n.color = n.originalColor;
         n.label = n.originalLabel;
     });
@@ -188,6 +192,7 @@ function searchChange(e) {
         if (n.label == value) {
             if (!selected[n.id]) {
                 selected[n.id] = n;
+                n.nodeBorderColor = '#000'
                 var c = s.camera;
                 sigma.misc.animation.camera(c, {
                     x: n['read_cam0:x'], y: n['read_cam0:y'],
@@ -367,9 +372,13 @@ function showSelectedNodes(selected) {
         Object.keys(selected).forEach(function (key) {
             var selected_item = document.createElement("div");
             selected_item.classList.add('selected-node');
-            selected_item.innerHTML = selected[key].label +
-                "<br>" + selected[key].attributes.affiliation + "<br><a href='" + selected[key].attributes.url
-                + "' target='_blank' style='color:white;'>Google Scholar</a>"
+            if (selected[key].attributes.affiliation == undefined) {
+                selected_item.innerHTML = selected[key].label
+            } else {
+                selected_item.innerHTML = selected[key].label +
+                    "<br>" + selected[key].attributes.affiliation + "<br><a href='" + selected[key].attributes.url
+                    + "' target='_blank' style='color:white;'>Google Scholar</a>"
+            }
             selected_container.appendChild(selected_item);
         });
     }
