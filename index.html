@@ -51,6 +51,8 @@
 <!-- END SIGMA IMPORTS -->
 <script src="gwf_co_author_graph/plugins/sigma.parsers.gexf/gexf-parser.js"></script>
 <script src="gwf_co_author_graph/plugins/sigma.parsers.gexf/sigma.parsers.gexf.js"></script>
+<script src="gwf_co_author_graph/plugins/sigma.layout.noverlap/sigma.layout.noverlap.js"></script>
+<script src="gwf_co_author_graph/plugins/sigma.plugins.animate/sigma.plugins.animate.js"></script>
 <script src="gwf_co_author_graph/plugins/sigma.renderers.customShapes/shape-library.js"></script>
 <script src="gwf_co_author_graph/plugins/sigma.renderers.customShapes/sigma.renderers.customShapes.js"></script>
 <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
@@ -209,18 +211,20 @@
       borderSize: 6,
       defaultEdgeColor: '#B1B1B1',
       edgeColor: 'default',
-      minNodeSize: 0.5,
-      maxNodeSize: 30,
-      labelThreshold: 10,
-      labelSize: "proportional",
+      minNodeSize: 0.001,
+      maxNodeSize: 25,
+      labelThreshold: 15,
+      labelSize: "fixed",
       defaultNodeBorderColor: "#FFF",
-      //scalingMode: 'outside',
+      scalingMode: 'inside',
       sideMargin: 1,
-      maxEdgeSize: 2
+      batchEdgesDrawing: true,
+      hideEdgesOnMove: true,
+      animationsTime: 5000
     }
   })
 
-  sigma.parsers.gexf('gwf_co_author_graph/file/data/not_force_atlas.gexf',
+  sigma.parsers.gexf('gwf_co_author_graph/file/data/force_atlas_new.gexf',
     s,
     function (s) {
       // We first need to save the original colors of our
@@ -302,6 +306,8 @@
         });
 
       });
+
+
       s.refresh();
       populateSearchList(s.graph.nodes());
       populateAffiliations(s.graph.nodes());
@@ -314,6 +320,27 @@
       zoomInButton.addEventListener("click", zoomIn);
       var zoomOutButton = document.getElementById('zoom-out-button');
       zoomOutButton.addEventListener("click", zoomOut);
+
+      // Configure the noverlap layout:
+      var noverlapListener = s.configNoverlap({
+        nodeMargin: 0.5,
+        scaleNodes: 1.1,
+        gridSize: 50,
+        easing: 'cubicIn', // animation transition function
+        duration: 100   // animation duration. Long here for the purposes of this example only
+      });
+      // Bind the events:
+      noverlapListener.bind('start stop interpolate', function (e) {
+        console.log(e.type);
+        if (e.type === 'start') {
+          console.time('noverlap');
+        }
+        if (e.type === 'interpolate') {
+          console.timeEnd('noverlap');
+        }
+      });
+      // Start the layout:
+      s.startNoverlap();
     });
 
   function searchChange(e) {
@@ -644,4 +671,6 @@
       }
     });
   }
+
+
 </script>
