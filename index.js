@@ -24,7 +24,8 @@ var imp_aff = [
     "National Center For Atmospheric Research",
     "University of British Columbia",
     "University of Calgary",
-    "University of Guelph"
+    "University of Guelph",
+    "Université de Montréal"
 ];
 
 
@@ -74,8 +75,15 @@ sigma.parsers.gexf('gwf_co_author_graph/file/data/force_atlas_new.gexf',
         // We first need to save the original colors of our
         // nodes and edges, like this:
         s.graph.nodes().forEach(function (n) {
-            n.originalColor = n.color;
-            n.originalLabel = n.label;
+            if (imp_aff.includes(n.attributes.affiliation)) {
+                n.originalColor = n.color;
+                n.originalLabel = n.label;
+            } else {
+                n.color = "#708090"
+                n.originalColor = n.color;
+                n.originalLabel = n.label;
+            }
+
         });
 
         s.graph.edges().forEach(function (e) {
