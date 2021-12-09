@@ -14,6 +14,18 @@ var selected = [];
 var attr_color = {};
 var selectedAffiliation = [];
 var value_list = [];
+var imp_aff = [
+    "University of Saskatchewan",
+    "University of Waterloo",
+    "McMaster University",
+    "Wilfrid Laurier University",
+    "University of Northern British Columbia",
+    "Environment and Climate Change Canada",
+    "National Center For Atmospheric Research",
+    "University of British Columbia",
+    "University of Calgary",
+    "University of Guelph"
+];
 
 
 sigma.classes.graph.addMethod('neighbors', function (nodeId) {
@@ -250,6 +262,9 @@ function populateAffiliations(nodes) {
         }
     });
 
+    console.log(attr)
+    console.log(attr.length)
+
     // Create items array
     var items = Object.keys(attr).map(function (key) {
         return [key, attr[key]];
@@ -267,23 +282,25 @@ function populateAffiliations(nodes) {
 
     for (const [key, value] of Object.entries(attr_new)) {
         if (key != 'undefined') {
-            var input = document.createElement("input");
-            input.type = "checkbox";
-            input.classList.add("checkbox-round");
-            input.style.cssText = "border: 4px solid " + attr_color[key]
-            input.checked = false;
-            input.value = key;
-            input.addEventListener("click", filterNodesAffl)
-            container.appendChild(input);
+            if (imp_aff.includes(key)) {
+                var input = document.createElement("input");
+                input.type = "checkbox";
+                input.classList.add("checkbox-round");
+                input.style.cssText = "border: 4px solid " + attr_color[key]
+                input.checked = false;
+                input.value = key;
+                input.addEventListener("click", filterNodesAffl)
+                container.appendChild(input);
 
-            var label = document.createElement("label");
-            label.classList.add("label-round");
-            label.innerText = key;
-            label.style.cssText = "border-bottom: 5px solid " + attr_color[key]
-            container.appendChild(label);
+                var label = document.createElement("label");
+                label.classList.add("label-round");
+                label.innerText = key;
+                label.style.cssText = "border-bottom: 5px solid " + attr_color[key]
+                container.appendChild(label);
 
-            // Append a line break 
-            container.appendChild(document.createElement("br"));
+                // Append a line break 
+                container.appendChild(document.createElement("br"));
+            }
         }
     };
 }
