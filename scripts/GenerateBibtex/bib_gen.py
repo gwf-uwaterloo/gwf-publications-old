@@ -3,7 +3,7 @@ import yaml
 import pandas as pd
 from typing import Any
 from typing import Dict
-from utils import extract_dois, fetch_bib, fetch_url_no_doi
+from utils import extract_dois, fetch_bib, fetch_url_no_doi, get_url_from_doi
 from bibtexparser.bibdatabase import BibDatabase
 from bibtexparser.bwriter import BibTexWriter
 
@@ -48,6 +48,12 @@ class GenerateBibtex:
         with open(output_bib_path, "w") as bibfile:
             bibfile.write(writer.write(db))
 
+    def _fetch_bib(self, url: str):
+        """
+        Fetch bibtex for a single article
+        """
+        return fetch_bib(url)
+
     def no_doi_fetch_url(self, input_file: str, output_file: str = None):
         """
         This function generates the semantic scholar landing page URL for
@@ -85,7 +91,10 @@ class GenerateBibtex:
         self.url_list = url_list
         return paper_df
 
-    def fetch_semantic_scholar(self, input_file: str, output_file: str = None):
+    def fetch_url_with_doi(self, doi: str) -> str:
+        return get_url_from_doi(doi, self.config_dict)
+
+    def fetch_semantic_scholar_url(self, input_file: str, output_file: str = None):
         """
         This function generates the semantic scholar landing page URL for
         Articles in a CSV/XLSX file with a doi link
@@ -160,7 +169,12 @@ if __name__ == "__main__":
     excel_file = "/Users/mac/Desktop/gwf_publications.csv"
     generator = GenerateBibtex()
     # df = generator.fetch_semantic_scholar(excel_file)
-    generator.generate_bib(
-        output_bib_path="output.bib",
-        input_file="/Users/mac/Desktop/gwf_publications_no_doi.csv",
-    )
+    # generator.generate_bib(
+    #     output_bib_path="output.bib",
+    #     input_file="/Users/mac/Desktop/gwf_publications_no_doi.csv",
+    # )
+
+    # generator._fetch_bib(
+    #     "https://www.semanticscholar.org/paper/e784370c56d4eef9ddd26ed08e4cb683ff00e7c9"
+    # )
+    print(generator.fetch_url_with_doi("10.5194/ESSD-12-629-2020"))
