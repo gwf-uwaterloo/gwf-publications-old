@@ -1,10 +1,14 @@
 import os
+import re
 import json
 import time
 import requests
+import difflib
 import bibtexparser
 import pandas as pd
 from tqdm import tqdm
+import nltk
+from nltk.corpus import stopwords
 import selenium
 from selenium.webdriver import Firefox
 from selenium.webdriver.firefox.options import Options
@@ -12,6 +16,9 @@ from selenium.webdriver.firefox.options import Options
 opts = Options()
 opts.add_argument("--headless")
 browser = Firefox(options=opts)
+
+nltk.download("stopwords")
+list_stopwords = list(stopwords.words("english"))
 
 
 def fetch_bib(url: str):
@@ -114,7 +121,9 @@ def get_url_from_doi(doi: str, config: dict, retry_iter: int = 3):
 
 def extract_dois(publication: str, config, split_string: str):
     """
-    This function e
+    This function extracts the doi number from a piece of string
+    and then calls the `get_url_from_doi` to generate the landing
+    page of the article
     """
 
     def publist2url(publication_list: list):
@@ -143,5 +152,63 @@ def extract_dois(publication: str, config, split_string: str):
         except:
             print("Could not fetch semantic scholar landing url")
             sem_landing_url = None
+
+    return sem_landing_url
+
+
+def fetch_url_no_doi(publication: str):
+    """
+    Fetch the Semantic Scholar landing page url for  an Article
+    without a doi link
+    """
+    string_check = re.compile("[@_!#$%^&*()<>?/\|}{~:-]")
+    paper_url = "https://api.semanticscholar.org/v1/paper/"
+    search_url = "https://api.semanticscholar.org/graph/v1/paper/search?"
+    print(publication)
+
+    pub = re.sub("([A-Z][.][A-Z][.][,])", "", publication)
+    pub = re.sub("([A-Z][.][,])", "", publication)
+    pub = re.sub("([A-Z][.][A-Z][.])", "", pub).replace(".", "").replace('"', "")
+    pub = re.sub("([A-Z][.])", "", pub).replace("’", "").replace("'", "")
+    pub = re.sub("([(][0-9]{4}[)])", "", pub)
+
+    pub = [i for item in pub.split(",") for i in item.strip().split()]
+    pub = [item for item in pub if item.lower() not in list_stopwords and len(item) > 2]
+
+    pub = [
+        item
+        for item in pub
+        if (string_check.search(item) == None) and not bool(re.search(r"\d", item))
+    ]
+
+    i = 6
+    while True:
+        try:
+            query = "+".join(pub[:i]).lower()
+            break
+        except:
+            i -= 1
+    print("[Query]:  " + query)
+
+    PARAMS = {"offset": 0, "limit": 50, "query": query}
+
+    r = requests.get(url=search_url, params=PARAMS)
+    try:
+        data = r.json()
+        if data["total"] > 1:
+            score = []
+            for paper in data["data"]:
+                temp = difflib.SequenceMatcher(None, paper["title"], publication)
+                score.append(temp.ratio())
+
+            url2 = paper_url + data["data"][score.index(max(score))]["paperId"]
+        else:
+            url2 = paper_url + data["data"][0]["paperId"]
+
+        r2 = requests.get(url=url2)
+        data2 = r2.json()
+        sem_landing_url = data2["url"]
+    except:
+        sem_landing_url = None
 
     return sem_landing_url

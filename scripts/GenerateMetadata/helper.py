@@ -27,11 +27,16 @@ FIELDS = [
 
 
 def fetch_citations(paper_id, citation_url: str = CITATION_URL):
+    """
+    Fetch the citations of a paper from semantic scholar
+    using the unique paper id
+    e.g bac31808aa57418e0cf11b6de088a30a30196caa
+    """
     offset = 0
     assert isinstance(paper_id, str)
 
     citation_url = citation_url.replace("{paper_id}", paper_id)
-    citation_url = citation_url.replace("{fields}", ",".join(fields))
+    citation_url = citation_url.replace("{fields}", ",".join(FIELDS))
 
     citation_url_new = citation_url.replace("{offset}", str(offset))
     r = requests.get(url=citation_url_new)
@@ -54,9 +59,14 @@ def fetch_citations(paper_id, citation_url: str = CITATION_URL):
 
 
 def fetch_references(paper_id: str, references_url: str = REFERENCES_URL):
+    """
+    Fetch the citations of a paper from semantic scholar
+     using the unique paper id
+    e.g bac31808aa57418e0cf11b6de088a30a30196caa
+    """
     offset = 0
     references_url = references_url.replace("{paper_id}", paper_id)
-    references_url = references_url.replace("{fields}", ",".join(fields))
+    references_url = references_url.replace("{fields}", ",".join(FIELDS))
 
     references_url_new = references_url.replace("{offset}", str(offset))
     r = requests.get(url=references_url_new)
@@ -79,26 +89,32 @@ def fetch_references(paper_id: str, references_url: str = REFERENCES_URL):
 
 
 def fetch_paper_metadata(
-    paper_id: str, fields: list = FIELDS, paper_url: str = PAPER_URL
+    paper_id: str,
+    fields: list = FIELDS,
+    paper_url: str = PAPER_URL,
+    retry_iter: int = 3,
 ):
-    print(f"paper id {paper_id}")
+    print(f"[INFO] paper id {paper_id}")
     paper_url = paper_url.replace("{paper_id}", paper_id)
 
     try:
         r = requests.get(url=paper_url)
         data = r.json()
-        metadata = [data[i] for i in fields]
-    except:
-        try:
+        if not "error" in list(data.keys()):
+            metadata = [data[i] for i in fields]
+        else:
+            metadata = None
+    except KeyError as e:
+        iteration = retry_iter
+        metadata = None
+        while iteration != 0:
+            print("[ERROR] Timeout; Trying again")
+            iteration -= 1
             time.sleep(300)
             r = requests.get(url=paper_url)
             data = r.json()
             metadata = [data[i] for i in fields]
-        except:
-            time.sleep(300)
-            r = requests.get(url=paper_url)
-            data = r.json()
-            metadata = [data[i] for i in fields]
+
     return metadata
 
 
