@@ -2,3 +2,31 @@
 npm-debug.log
 .DS_Store
 /*.env
+
+*.log
+.env
+*.pyc
+__pycache__
+.pytest_cache/
+.DS_Store
+
+# Anserini index
+anserini/
+api/index/
+
+# TensorFlow SavedModel
+*.pb
+variables/
+
+# Logs
+*.log*
+*.log.*
+*.out
+
+.vscode
+
+# client builds
+build/
+static/
+
+geckodriver
